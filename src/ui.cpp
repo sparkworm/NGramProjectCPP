@@ -3,7 +3,11 @@
 #include "ui.h"
 
 std::string main_menu = std::string("What would you like to do?"
-				    "\n\t0: quit");
+				    "\n\t0: Quit"
+				    "\n\t1: Create Shape"
+				    "\n\t2: Fracture shape"
+				    "\n\t3: Count polygons"
+				    "\n\t4: View shape");
 
 int io_loop() {
   while (true) {
@@ -12,6 +16,9 @@ int io_loop() {
     case 0:
       std::cout << "Exiting..." << std::endl;
       return 0;
+      break;
+    default:
+      std::cout << "Unknown input" << std::endl;
       break;
     }
   }
