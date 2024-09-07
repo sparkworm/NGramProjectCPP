@@ -6,6 +6,6 @@
 struct line {
   point a;
   point b;
-}
+};
 
 #endif

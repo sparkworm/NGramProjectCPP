@@ -2,8 +2,8 @@
 #define POINT
 
 struct point {
-  float x;
-  float y;
-}
+  double x;
+  double y;
+};
 
 #endif
