@@ -11,6 +11,6 @@ int io_loop();
 
 // Function to ask the user for a specific input
 template <typename T>
-T query_input(std::string prompt);
+T query_input(const std::string& prompt);
 
 #endif

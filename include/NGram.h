@@ -2,12 +2,14 @@
 #define N_GRAM
 
 #include <vector>
+#include <string>
 #include "line.h"
 
 class NGram {
 public:
   // Constructors
   NGram(int num_points);
+  NGram(int num_points, double radius);
 
   // Destructor
   ~NGram();
@@ -19,7 +21,9 @@ private:
   std::vector<line> lines_;
 
   // Private functions
-  void generate(int num_points);
-}
+  void generate(int num_points, double radius);
+
+  std::string to_string();
+};
 
 #endif
