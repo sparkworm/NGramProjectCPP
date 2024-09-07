@@ -8,7 +8,7 @@ CXXFLAGS = -std=c++17 -Iinclude
 TARGET = PolyProject
 
 # Define the source files
-SRCS = src/main.cpp
+SRCS = src/main.cpp src/ui.cpp
 
 # Define the object files
 OBJS = $(SRCS:.cpp=.o)
