@@ -5,7 +5,7 @@ CXX = g++
 CXXFLAGS = -std=c++17 -Iinclude
 
 # Define the target executable
-TARGET = PolyProject
+TARGET = build/PolyProject
 
 # Define the source files
 SRCS = src/main.cpp src/ui.cpp
