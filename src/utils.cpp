@@ -21,7 +21,7 @@ bool are_points_within_error(point& a, point& b) {
  */
 bool is_point_on_line(point& p, line& l) {
   if (is_line_vertical(l)) {
-    return std::min(l.a.y, l.b.y) < p.y && p.y < std::max(l.a.y, l.b.y);
+    return std::abs(l.a.x - p.x) < error_limit;
   }
   return std::abs((l.a.y - p.y) - line_slope(l) * (l.a.x - p.x)) < error_limit;
 }
@@ -30,7 +30,13 @@ bool is_point_on_line(point& p, line& l) {
  * NOTE: This function DOES check whether the point fits between the segment endpoints
  */
 bool is_point_on_segment(point& p, line& l) {
-  
+  // first check if point is on line
+  if (!is_point_on_line) return false;
+  // if the line is vertical, check that it's within y values
+  if (is_line_vertical(l)) {
+    return std::min(l.a.y, l.b.y) < p.y && p.y < std::max(l.a.y, l.b.y);
+  }
+  return std::min(l.a.x, l.b.x) < p.x && p.x < std::max(l.a.x, l.b.x);
 }  
 
 bool is_line_vertical(line& l) {
