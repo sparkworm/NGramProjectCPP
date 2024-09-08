@@ -10,6 +10,10 @@ struct line {
   point a;
   point b;
 
+line() : a(point()), b(point()) {}
+  
+line(point point1, point point2) : a(point1), b(point2) {}
+  
   std::string to_string() const {
     return "[" + a.to_string() + "; " + b.to_string() + "]";
   }
