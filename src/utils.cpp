@@ -34,3 +34,21 @@ point intersection_point(line& a, line& b) {
 
   return p;
 }
+
+/* This function turns one line into two lines, with the specified point being a shared point
+ * between them
+ * It is IMPERATIVE that the point it KNOWN to be on the line
+ */
+std::vector<line> split_line(line& l, point& p) {
+  std::vector<line> new_lines;
+  // can potentially add a resize to minimally improve performance
+  
+  line l1(l.a, p); // make sure that assigning the reference to p is not a problem here
+  line l2(l.b, p);
+
+  new_lines.push_back(l1);
+  new_lines.push_back(l2);
+
+  return new_lines;
+}
+  
