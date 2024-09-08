@@ -12,6 +12,10 @@ bool are_points_within_error(point& a, point& b);
 
 bool is_point_on_line(point& p, line& l);
 
+bool is_point_on_segment(point* p, line& l);
+
+bool is_line_vertical(line& l);
+
 double line_slope(line& l);
 
 bool do_lines_intersect(line& a, line& b);
