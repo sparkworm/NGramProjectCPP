@@ -12,7 +12,11 @@ public:
   NGram(int num_points, double radius);
 
   // Destructor
-  ~NGram();
+  //~NGram();
+
+  std::string to_string();
+  
+   void generate(int num_points, double radius);
   
   // Member functions
   int count_polys();
@@ -21,9 +25,7 @@ private:
   std::vector<line> lines_;
 
   // Private functions
-  void generate(int num_points, double radius);
-
-  std::string to_string();
+  //void generate(int num_points, double radius);
 };
 
 #endif
