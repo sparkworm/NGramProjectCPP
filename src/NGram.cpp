@@ -57,6 +57,7 @@ void NGram::fracture() {
       // if so, both lines should be fragmented, and their fragments appended to the back
       // the original lines should immediately be removed, and the iteration should move on.
       if (do_segments_intersect(main_l, other_l)) {
+	std::cout << "intersection found" << std::endl;
         point i_p = intersection_point(main_l, other_l);
 	//std::vector<line> fragments;
 	// there should always be 4 items
@@ -89,6 +90,8 @@ std::string NGram::to_string() {
   for (auto l : NGram::lines_) {
     str += "\n" + l.to_string();
   }
+
+  str += std::string("\n\nNGram with " + std::to_string(lines_.size()) + " line segments");
 
   return str;
 }
