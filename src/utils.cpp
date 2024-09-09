@@ -77,23 +77,10 @@ point intersection_point(line& l1, line& l2) {
   
   double m_a = line_slope(l1);
   double m_b = line_slope(l2);
-
-  std::cout << m_a - m_b << std::endl;
   
   point p;
   p.x = (m_a * l1.a.x - m_b * l2.a.x - l1.a.y + l2.a.y) / (m_a - m_b);
   p.y = (m_b * l1.a.y - m_a * l2.a.y + (m_a * m_b) * (l2.a.x - l1.a.x)) / (m_b - m_a);
-  std::cout << p.x << std::endl;
-  
-  /*
-    var x_a: float = point0.position.x
-    var x_b: float = other.point0.position.x
-    var y_a: float = point0.position.y
-    var y_b: float = other.point0.position.y
-	
-    var x: float = (m_a * x_a - m_b * x_b - y_a + y_b) / (m_a - m_b)
-    var y: float = (m_b * y_a - m_a * y_b + (m_a * m_b) * (x_b - x_a)) / (m_b - m_a)
-   */
   
   return p;
 }
