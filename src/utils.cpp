@@ -61,7 +61,7 @@ bool do_lines_intersect(line& l1, line& l2) {
     return !(is_line_vertical(l1) && is_line_vertical(l2));
   }
   
-  return std::abs(line_slope(l1) - line_slope(l2)) < error_limit;
+  return std::abs(line_slope(l1) - line_slope(l2)) > error_limit;
 }
 
 /* Function that determines whether two line segments intersect.

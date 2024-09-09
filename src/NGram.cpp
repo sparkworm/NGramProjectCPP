@@ -72,8 +72,8 @@ void NGram::fracture() {
 	temp = split_line(other_l, i_p);
 	lines_.insert(lines_.end(), temp.begin(), temp.end());
 
-	lines_.erase(lines_.begin() + i);
 	lines_.erase(lines_.begin() + j);
+	lines_.erase(lines_.begin() + i);
 
 	//lines_.insert(lines_.end(), fragments.begin(), fragments.end());
 
