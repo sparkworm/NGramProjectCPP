@@ -2,6 +2,7 @@
 
 #include <cmath>
 
+#include "utils.h"
 #include "math_constants.h"
 #include "point.h"
 
@@ -41,6 +42,43 @@ void NGram::generate(int num_points, double radius) {
       l.a = vertices.at(v);
       l.b = vertices.at(i);
       lines_.push_back(l);
+    }
+  }
+}
+
+void NGram::fracture() {
+  //std::vector<line> new_lines = lines_;
+  
+  for (size_t i=0; i<lines_.size(); i++) {
+    line main_l = lines_.at(i);
+    for (size_t j=i+1; j<lines_.size(); j++) {
+      line other_l = lines_.at(j);
+      // check if the segments intersect
+      // if so, both lines should be fragmented, and their fragments appended to the back
+      // the original lines should immediately be removed, and the iteration should move on.
+      if (do_segments_intersect(main_l, other_l)) {
+        point i_p = intersection_point(main_l, other_l);
+	//std::vector<line> fragments;
+	// there should always be 4 items
+	//fragments.reserve(4);
+
+	std::vector<line> temp;
+	temp.reserve(2);
+	  
+	temp = split_line(main_l, i_p);
+	lines_.insert(lines_.end(), temp.begin(), temp.end());
+	
+	temp = split_line(other_l, i_p);
+	lines_.insert(lines_.end(), temp.begin(), temp.end());
+
+	lines_.erase(lines_.begin() + i);
+	lines_.erase(lines_.begin() + j);
+
+	//lines_.insert(lines_.end(), fragments.begin(), fragments.end());
+
+	i--;
+	break;
+      }	
     }
   }
 }

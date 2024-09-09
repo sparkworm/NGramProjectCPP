@@ -16,7 +16,9 @@ public:
 
   std::string to_string();
   
-   void generate(int num_points, double radius);
+  void generate(int num_points, double radius);
+
+  void fracture();
   
   // Member functions
   int count_polys();

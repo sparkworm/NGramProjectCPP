@@ -18,7 +18,9 @@ bool is_line_vertical(line& l);
 
 double line_slope(line& l);
 
-bool do_lines_intersect(line& a, line& b);
+bool do_lines_intersect(line& l1, line& l2);
+
+bool do_segments_intersect(line& l1, line& l2);
 
 point intersection_point(line& a, line& b);
 
