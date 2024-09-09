@@ -47,12 +47,29 @@ double line_slope(line& l) {
   return (l.a.y - l.b.y) / (l.a.x - l.b.x);
 }
 
+
+/* Simply returns whether two lines intersect anywhere
+ * The only time that it will return false is if the lines are parallel
+ */
 bool do_lines_intersect(line& l1, line& l2) {
   if (is_line_vertical(l1) || is_line_vertical(l2)) {
     return !(is_line_vertical(l1) && is_line_vertical(l2));
   }
   
   return std::abs(line_slope(l1) - line_slope(l2)) < error_limit;
+}
+
+/* Function that determines whether two line segments intersect.
+ * DOES take into account whether the intersection occurs ON SEGMENTS.
+ */
+bool do_segments_intersect(line& l1, line& l2) {
+  if (!do_lines_intersect(l1, l2)) return false;
+
+  // find the point at which the lines interesect
+  point p = intersection_point(l1, l2);
+
+  return is_point_on_segment(p, l1) && is_point_on_segment(p, l2);
+  
 }
 
 /* Assumes that the lines DO intersect.  
