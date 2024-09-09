@@ -26,17 +26,21 @@ bool is_point_on_line(point& p, line& l) {
   return std::abs((l.a.y - p.y) - line_slope(l) * (l.a.x - p.x)) < error_limit;
 }
 
-/* This function returns whether a point falls within a specific line segment
- * NOTE: This function DOES check whether the point fits between the segment endpoints
+/* This function returns whether a point falls within a specific line segment.
+ * NOTE: This function DOES check whether the point fits between the segment endpoints.
+ * This function specifically returns false if the point is on one of then endpoints.
  */
 bool is_point_on_segment(point& p, line& l) {
   // first check if point is on line
   if (!is_point_on_line) return false;
+  if (are_points_within_error(p, l.a) || are_points_within_error(p, l.b)) return false;
   // if the line is vertical, check that it's within y values
   if (is_line_vertical(l)) {
-    return std::min(l.a.y, l.b.y) < p.y && p.y < std::max(l.a.y, l.b.y);
+    return std::min(l.a.y, l.b.y) < p.y
+      && p.y < std::max(l.a.y, l.b.y);
   }
-  return std::min(l.a.x, l.b.x) < p.x && p.x < std::max(l.a.x, l.b.x);
+  return std::min(l.a.x, l.b.x) < p.x
+    && p.x < std::max(l.a.x, l.b.x);
 }  
 
 bool is_line_vertical(line& l) {
@@ -69,7 +73,6 @@ bool do_segments_intersect(line& l1, line& l2) {
   point p = intersection_point(l1, l2);
 
   return is_point_on_segment(p, l1) && is_point_on_segment(p, l2);
-  
 }
 
 /* Assumes that the lines DO intersect.  
