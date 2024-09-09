@@ -47,18 +47,54 @@ double line_slope(line& l) {
   return (l.a.y - l.b.y) / (l.a.x - l.b.x);
 }
 
-bool do_lines_intersect(line& a, line& b) {
-  return std::abs(line_slope(a) - line_slope(b)) < error_limit;
+bool do_lines_intersect(line& l1, line& l2) {
+  if (is_line_vertical(l1) || is_line_vertical(l2)) {
+    return !(is_line_vertical(l1) && is_line_vertical(l2));
+  }
+  
+  return std::abs(line_slope(l1) - line_slope(l2)) < error_limit;
 }
 
-point intersection_point(line& a, line& b) {
-  double m_a = line_slope(a);
-  double m_b = line_slope(b);
+/* Assumes that the lines DO intersect.  
+ * Also assumes that l1 and l2 are NOT BOTH vertical.  
+ * Does NOT bother to check if the intersection point is within a segment.  
+ */
+point intersection_point(line& l1, line& l2) {
 
+  if (is_line_vertical(l1)) {
+    point p;
+    p.x = l1.a.x;
+    p.y = l2.a.y - (line_slope(l2) * (l2.a.x - p.x));
+    return p;
+  }
+
+  if (is_line_vertical(l2)) {
+    point p;
+    p.x = l2.a.x;
+    p.y = l1.a.y - (line_slope(l1) * (l1.a.x - p.x));
+    return p;
+  }
+  
+  double m_a = line_slope(l1);
+  double m_b = line_slope(l2);
+
+  std::cout << m_a - m_b << std::endl;
+  
   point p;
-  p.x = (m_a * a.a.x - m_b * b.a.x - a.a.y + b.a.y) / (m_a - m_b);
-  p.y = (m_b * a.a.y - m_a * b.a.y + (m_a * m_b) * (b.a.x - a.a.x)) / (m_b - m_a);
-
+  p.x = (m_a * l1.a.x - m_b * l2.a.x - l1.a.y + l2.a.y) / (m_a - m_b);
+  p.y = (m_b * l1.a.y - m_a * l2.a.y + (m_a * m_b) * (l2.a.x - l1.a.x)) / (m_b - m_a);
+  std::cout << p.x << std::endl;
+  
+  /*
+    var x_a: float = point0.position.x
+    var x_b: float = other.point0.position.x
+    var y_a: float = point0.position.y
+    var y_b: float = other.point0.position.y
+	
+    var x: float = (m_a * x_a - m_b * x_b - y_a + y_b) / (m_a - m_b)
+    var y: float = (m_b * y_a - m_a * y_b + (m_a * m_b) * (x_b - x_a)) / (m_b - m_a)
+   */
+  
   return p;
 }
 
