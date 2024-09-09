@@ -15,19 +15,7 @@ std::string main_menu = std::string("\n\nWhat would you like to do?"
 				    "\n\t3: Count polygons"
 				    "\n\t4: View shape");
 
-int io_loop() {
-  point p1(0,0);
-  point p2(1,10);
-
-  point p3(-1,10);
-  point p4(10,0);
-  
-  line l1(p1,p2);
-  line l2(p3,p4);
-  
-  std::cout << "Do lines intersect? " << do_lines_intersect(l1, l2) << std::endl;
-  std::cout << "Intersection point: " << intersection_point(l1, l2) << std::endl;
-
+int io_loop() {  
   // initialize a pointer to what will later be the NGram
   NGram* n_gram = nullptr;
 
