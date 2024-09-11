@@ -8,7 +8,7 @@
 
 double distance_between_points(point& a, point& b);
 
-bool are_points_within_error(point& a, point& b);
+bool are_points_within_error(const point& a, const point& b);
 
 bool is_point_on_line(point& p, line& l);
 

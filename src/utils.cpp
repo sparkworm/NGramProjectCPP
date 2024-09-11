@@ -8,11 +8,11 @@
 
 double error_limit = 0.001;
 
-double distance_between_points(point& a, point& b) {
+double distance_between_points(const point& a, const point& b) {
   return std::sqrt(std::pow((a.x - b.x), 2.0) + std::pow((a.y - b.y), 2.0));
 }
 
-bool are_points_within_error(point& a, point& b) {
+bool are_points_within_error(const point& a, const point& b) {
   return std::abs(distance_between_points(a, b)) < error_limit;
 }
 
@@ -32,7 +32,7 @@ bool is_point_on_line(point& p, line& l) {
  */
 bool is_point_on_segment(point& p, line& l) {
   // first check if point is on line
-  if (!is_point_on_line) return false;
+  if (!is_point_on_line(p, l)) return false;
   // specifically return false if the point is on one of the endpoints
   if (are_points_within_error(p, l.a) || are_points_within_error(p, l.b)) return false;
   // if the line is vertical, check that it's within y values

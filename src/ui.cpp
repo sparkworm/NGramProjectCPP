@@ -16,14 +16,14 @@ std::string main_menu = std::string("\n\nWhat would you like to do?"
 				    "\n\t4: View shape");
 
 int io_loop() {
-  point p1(31,95), p2(-81,-59);
-  point p3(-81,59), p4(31,-95);
+  point p1(100,0), p2(-0.00001,-100);
+  point p3(0.0001,0.00001);
 
-  line l1(p1,p2), l2(p3,p4);
+  line l1(p1,p2);
 
-  std::cout << "Do lines intersect? " << do_lines_intersect(l1,l2) << std::endl;
-  std::cout << "Do segments intersect? " << do_segments_intersect(l1,l2) << std::endl;
+  int frfr = is_point_on_segment(p3, l1);
   
+  std::cout << "Is point on line? " << frfr << std::endl;
   
   // initialize a pointer to what will later be the NGram
   NGram* n_gram = nullptr;

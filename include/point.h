@@ -20,6 +20,8 @@ point(double x_pos, double y_pos) : x(x_pos), y(y_pos) {}
     os << "(" << p.x << ", " << p.y << ")";
     return os;
   }
+
+  friend bool operator == (const point& lp, const point& rp);
 };
 
 #endif
