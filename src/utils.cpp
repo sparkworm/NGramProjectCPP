@@ -123,3 +123,12 @@ std::vector<line> split_line(line& l, point& p) {
   return new_lines;
 }
   
+std::vector<line> get_lines_with_point(std::vector<line>& lines, point& p) {
+  std::vector<line> lines_with_point;
+  for (auto it=lines.begin(); it!=lines.end(); ++it) {
+    if (are_points_within_error(it->a, p) || are_points_within_error(it->b, p)) {
+      lines_with_point.push_back(*it);
+    }
+  }
+  return lines_with_point;
+}

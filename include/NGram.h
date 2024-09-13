@@ -18,16 +18,18 @@ public:
   
   void generate(int num_points, double radius);
 
-  void fracture();
-  
+  void fracture();  
   // Member functions
   int count_polys();
+
+  std::vector<point> get_intersection_points();
+
+  //std::vector<line> get_lines_with_point(point& p);
 private:
   // Private variables
   std::vector<line> lines_;
 
-  // Private functions
-  //void generate(int num_points, double radius);
+  int trace_path (std::vector<point> history, std::vector<line> lines_remaining);
 };
 
 #endif

@@ -16,17 +16,11 @@ std::string main_menu = std::string("\n\nWhat would you like to do?"
 				    "\n\t4: View shape");
 
 int io_loop() {
-  point p1(100,0), p2(-0.00001,-100);
-  point p3(0.0001,0.00001);
-
-  line l1(p1,p2);
-
-  int frfr = is_point_on_segment(p3, l1);
-  
-  std::cout << "Is point on line? " << frfr << std::endl;
-  
   // initialize a pointer to what will later be the NGram
   NGram* n_gram = nullptr;
+  // keeps track over whether the current n_gram has been fractured
+  // this is necessary because they must be fractured to count without error
+  bool fractured = false;
 
   while (true) {
     int option = query_input<int>(main_menu);
@@ -48,6 +42,7 @@ int io_loop() {
       }
       // Assign the now created NGram to the n_gram pointer.
       n_gram = new NGram(num_vertices);
+      fractured = false;
       break;
     }
 
@@ -55,6 +50,7 @@ int io_loop() {
       std::cout << "Fracturing shape..." << std::endl;
       if (n_gram != nullptr) {
 	n_gram->fracture();
+	fractured = true;
       }
       else {
 	std::cout << "NO SHAPE DEFINED" << std::endl;
@@ -63,6 +59,16 @@ int io_loop() {
 
     case 3:
       std::cout << "Counting polygons..." << std::endl;
+      if (n_gram == nullptr) {
+	std::cout << "NO SHAPE DEFINED" << std::endl;
+      }
+      else if (!fractured) {
+	std::cout << "NGRAM HAS NOT BEEN FRACTURED" << std::endl;
+      }
+      else {
+	int num_polys = n_gram->count_polys();
+	std::cout << "Number of polygons: " << num_polys << std::endl;
+      }
       break;
 
     case 4:

@@ -51,22 +51,8 @@ void NGram::generate(int num_points, double radius) {
 // not as efficient as the other method, but I gave up on that one
 void NGram::fracture() {
   // create a list of all the points of intersection
-  std::vector<point> poi;
-
-  // find all intersections
-  for (auto it1=lines_.begin(); it1!=lines_.end(); ++it1) {
-    line i_line = *it1;
-    for (auto it2=std::next(it1); it2!=lines_.end(); ++it2) {
-      line j_line = *it2;
-      if (do_segments_intersect(i_line, j_line)) {
-	point intersection = intersection_point(i_line, j_line);
-	// check if this intersection is new to the list
-	if (std::find(poi.begin(), poi.end(), intersection) == poi.end()) {
-	  poi.push_back(intersection);
-	}
-      }
-    }
-  }
+  std::vector<point> poi = get_intersection_points();
+  
   // iterate through every intersection
   for (auto it_p=poi.begin(); it_p!=poi.end(); ++it_p) {
     // iterate through every line segment
@@ -83,82 +69,120 @@ void NGram::fracture() {
   }
 }
 
-/*
-void NGram::fracture() {
-  //std::vector<line> new_lines = lines_;
-  
-  for (size_t i=0; i<lines_.size(); i++) {
-    line main_l = lines_.at(i);
-    //  create a map to track all intersections with the given line
-    // key: line index
-    // value: point of intersection
-    std::map<size_t, point> intersections;
-    // iterates backwards
-    for (size_t j=lines_.size()-1; j>i; j--) {
-      if (do_segments_intersect(main_l, lines_.at(j))) {
-	std::cout << "intersection found" << std::endl;
-	// sets the value of idx to the point of intersection
-	intersections[j] = intersection_point(main_l, lines_.at(j));
+std::vector<point> NGram::get_intersection_points() {
+  std::vector<point> poi;
+  // find all intersections
+  for (auto it1=lines_.begin(); it1!=lines_.end(); ++it1) {
+    line i_line = *it1;
+    for (auto it2=std::next(it1); it2!=lines_.end(); ++it2) {
+      line j_line = *it2;
+      if (do_segments_intersect(i_line, j_line)) {
+	point intersection = intersection_point(i_line, j_line);
+	// check if this intersection is new to the list
+	if (std::find(poi.begin(), poi.end(), intersection) == poi.end()) {
+	  poi.push_back(intersection);
+	}
       }
     }
-    // if there are intersecting lines
-    if (intersections.size() > 0) {
-      std::cout << "Intersections present!" << std::endl;
-      std::vector<line> temp;
-      temp.reserve(2);
-      
-      //temp = split_line(main_l, i_p);
-      //lines_.insert(lines_.end(), temp.begin(), temp.end());
-
-      std::vector<line> main_l_fragments;
-      main_l_fragments.push_back(main_l);
-      
-      for (auto& [key, value] : intersections) {
-	temp = split_line(lines_.at(key), value);
-	for (auto& bob : temp) {
-	  std::cout << bob << std::endl;
-	}
-	lines_.insert(lines_.end(), temp.begin(), temp.end());
-
-	for (auto it=main_l_fragments.rbegin(); it != main_l_fragments.rend(); ++it) {
-	  std::cout << "main_l_fragment: " << *it << std::endl;
-	  if (is_point_on_line(value, *it)) {
-	    std::cout << "\tIntersection found!" << std::endl;
-	    temp = split_line(*it,
-	    for (auto& bob : temp) {
-	      std::cout << "\t" << bob << std::endl;
-	      }
-	    // create a normal iterator from it so that erase() can be called
-	    auto forward_it = std::next(it).base();
-	    // erase the segment that was split
-	    main_l_fragments.erase(forward_it);
-	    // add the segments that resulted from the split
-	    main_l_fragments.insert(main_l_fragments.end(), temp.begin(), temp.end());
-	    break;
-	  }
-	}
-	//lines_.erase(lines_.begin() + key);
-      }
-      
-      
-      lines_.insert(lines_.end(), main_l_fragments.begin(), main_l_fragments.end());
-      
-      
-      for (auto it = intersections.rbegin(); it != intersections.rend(); ++it) {
-	//auto forward_it = std::next(it).base();
-	lines_.erase(lines_.begin() + it->first);
-      }
-      
-      //      lines_.erase(lines_.begin() + j);
-      lines_.erase(lines_.begin() + i);
-      
-      //lines_.insert(lines_.end(), fragments.begin(), fragments.end());
-
-      i--;
-    }	
   }
+  return poi;
 }
-*/
+
+// this is the big boy, the one that does the important work
+/* 
+ * Should lead into a recursive function that branches into the various paths
+ */
+int NGram::count_polys() {
+  int num_polygons = 0;
+
+  std::vector<line> lines_remaining = lines_;
+
+  std::vector<point> points_remaining;
+  for (auto it=lines_remaining.begin(); it!=lines_remaining.end(); ++it) {
+    point a = it->a;
+    point b = it->b;
+
+    if(std::find(points_remaining.begin(), points_remaining.end(), a)==points_remaining.end()) {
+      points_remaining.push_back(a);
+    }
+    if(std::find(points_remaining.begin(), points_remaining.end(), b)==points_remaining.end()) {
+      points_remaining.push_back(b);
+    }
+  }
+  //std::cout << "points_remaining.size(): " << points_remaining.size() << std::endl;
+  
+  for (auto p_it=points_remaining.begin(); p_it!=points_remaining.end(); ++p_it) {
+    //std::cout << "\n\ninitiating counting procedure on point: " << *p_it << std::endl;
+    //std::cout << "remaining lines: " << lines_remaining.size() << std::endl;
+    point p = *p_it;
+
+    std::vector<point> h;
+    h.push_back(p);
+      
+    // this is written this way for debugging purposes
+    int poly_count = trace_path(h, lines_remaining);
+    num_polygons += poly_count;
+    //std::cout << "trace finished" << std::endl;
+    
+    // remove lines that contained the specified starting_point
+    for (auto it=lines_remaining.begin(); it!=lines_remaining.end();) {
+      if (are_points_within_error(it->a, *p_it)
+	  || are_points_within_error(it->b, *p_it)) {
+	//std::cout << "deleting line" << std::endl;
+	it = lines_remaining.erase(it);
+      }
+      else {
+	++it;
+      }
+    }
+  }
+
+  return num_polygons / 2;
+}
+
+// the recursive part of the tracing algorithm
+int NGram::trace_path (std::vector<point> history, std::vector<line> lines_remaining) {
+  //std::cout << "\ttrace depth: " << history.size() << std::endl;
+  int num_polygons = 0;
+  
+  point target_point = history.at(0);
+  point current_point = history.at(history.size()-1);
+  
+  // the possible lines that could be travelled to from current_point
+  std::vector<line> options = get_lines_with_point(lines_remaining, current_point);
+  if (!are_points_within_error(target_point, current_point)) {
+    // remove lines that contained the specified current_point
+    for (auto it=lines_remaining.rbegin(); it!=lines_remaining.rend();) {
+      //if (is_point_on_line(current_point, *it)) {
+      if (are_points_within_error(it->a, current_point)
+	  || are_points_within_error(it->b, current_point)) {
+	it = std::vector<line>::reverse_iterator(lines_remaining.erase(std::next(it).base()));
+	//lines_remaining.erase(it);
+      }
+      else {
+	++it;
+      }
+    }
+  }
+  //std::cout << "\t\toptions size: " << options.size() << std::endl;
+  // iterate through lines with current_point, starting the recursive method for each one
+  for (auto it=options.begin(); it!=options.end(); ++it) { 
+    //std::cout << "option: " << *it << std::endl;
+    // if the other point completes the polygon, increase polygon counter
+    if (it->other(current_point)==target_point) {
+      if (history.size() > 2) num_polygons++;
+    }
+    // otherwise, continue tracing
+    else {
+      std::vector<point> new_history = history;
+      // add the point other than the current point to the history of the new point
+      new_history.push_back(it->other(current_point));
+      
+      num_polygons += trace_path(new_history, lines_remaining);
+    }
+  }
+  return num_polygons;
+}
 
 std::string NGram::to_string() {
   std::string str = "Lines: \n";

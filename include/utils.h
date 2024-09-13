@@ -26,4 +26,6 @@ point intersection_point(line& a, line& b);
 
 std::vector<line> split_line(line& l, point& p);
 
+std::vector<line> get_lines_with_point(std::vector<line>& lines, point& p);
+
 #endif
