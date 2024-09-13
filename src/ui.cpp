@@ -2,6 +2,7 @@
 #include "ui.h"
 
 #include "NGram.h"
+#include "Timer.h"
 // might remove this later, it's only here for testing purposes at the moment
 #include "utils.h"
 
@@ -16,6 +17,7 @@ std::string main_menu = std::string("\n\nWhat would you like to do?"
 				    "\n\t4: View shape");
 
 int io_loop() {
+  Timer timer;
   // initialize a pointer to what will later be the NGram
   NGram* n_gram = nullptr;
   // keeps track over whether the current n_gram has been fractured
@@ -49,8 +51,11 @@ int io_loop() {
     case 2:
       std::cout << "Fracturing shape..." << std::endl;
       if (n_gram != nullptr) {
+	timer.start();
 	n_gram->fracture();
 	fractured = true;
+	timer.stop();
+	timer.display_time_passed();
       }
       else {
 	std::cout << "NO SHAPE DEFINED" << std::endl;
@@ -66,8 +71,11 @@ int io_loop() {
 	std::cout << "NGRAM HAS NOT BEEN FRACTURED" << std::endl;
       }
       else {
+	timer.start();
 	long num_polys = n_gram->count_polys();
 	std::cout << "Number of polygons: " << num_polys << std::endl;
+	timer.stop();
+	timer.display_time_passed();
       }
       break;
 
@@ -93,7 +101,6 @@ int io_loop() {
   return 0;
 }
 
-// function fixed by ChatGPT :(
 template <typename T>
 T query_input(const std::string& prompt) {
   T input;
