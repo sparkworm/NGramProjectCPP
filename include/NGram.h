@@ -20,7 +20,7 @@ public:
 
   void fracture();  
   // Member functions
-  int count_polys();
+  long count_polys();
 
   std::vector<point> get_intersection_points();
 
@@ -29,7 +29,7 @@ private:
   // Private variables
   std::vector<line> lines_;
 
-  int trace_path (std::vector<point> history, std::vector<line> lines_remaining);
+  long trace_path (std::vector<point> history, std::vector<line> lines_remaining);
 };
 
 #endif

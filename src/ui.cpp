@@ -66,7 +66,7 @@ int io_loop() {
 	std::cout << "NGRAM HAS NOT BEEN FRACTURED" << std::endl;
       }
       else {
-	int num_polys = n_gram->count_polys();
+	long num_polys = n_gram->count_polys();
 	std::cout << "Number of polygons: " << num_polys << std::endl;
       }
       break;

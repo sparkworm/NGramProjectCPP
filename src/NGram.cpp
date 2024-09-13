@@ -92,8 +92,8 @@ std::vector<point> NGram::get_intersection_points() {
 /* 
  * Should lead into a recursive function that branches into the various paths
  */
-int NGram::count_polys() {
-  int num_polygons = 0;
+long NGram::count_polys() {
+  long num_polygons = 0;
 
   std::vector<line> lines_remaining = lines_;
 
@@ -110,8 +110,11 @@ int NGram::count_polys() {
     }
   }
   //std::cout << "points_remaining.size(): " << points_remaining.size() << std::endl;
-  
+  double num_points = points_remaining.size();
+  double points_completed = 0;
   for (auto p_it=points_remaining.begin(); p_it!=points_remaining.end(); ++p_it) {
+    std::cout << "\r" << ((points_completed+1)*100/num_points) << "% of points with "
+	      << num_polygons/2 << " polys found\t\t\t" << std::flush;
     //std::cout << "\n\ninitiating counting procedure on point: " << *p_it << std::endl;
     //std::cout << "remaining lines: " << lines_remaining.size() << std::endl;
     point p = *p_it;
@@ -135,15 +138,16 @@ int NGram::count_polys() {
 	++it;
       }
     }
+    points_completed++;
   }
-
+  std::cout << std::endl;
   return num_polygons / 2;
 }
 
 // the recursive part of the tracing algorithm
-int NGram::trace_path (std::vector<point> history, std::vector<line> lines_remaining) {
+long NGram::trace_path (std::vector<point> history, std::vector<line> lines_remaining) {
   //std::cout << "\ttrace depth: " << history.size() << std::endl;
-  int num_polygons = 0;
+  long num_polygons = 0;
   
   point target_point = history.at(0);
   point current_point = history.at(history.size()-1);

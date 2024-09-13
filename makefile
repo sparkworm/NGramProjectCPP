@@ -22,8 +22,9 @@ $(TARGET): $(OBJS)
 
 # Rule to compile source files into object files
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -O3
 
 # Rule to clean up generated files
 clean:
-	rm -f $(TARGET) $(OBJS)
+	rm -f $(OBJS)
+#	rm -f $(TARGET) $(OBJS)
