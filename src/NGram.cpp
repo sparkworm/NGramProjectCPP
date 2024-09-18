@@ -20,6 +20,8 @@ NGram::NGram(int num_points, double radius) {
 // Destructor
 //NGram::~NGram();
 
+long num_polys = 0;
+
 // Member functions
 
 // Private functions
@@ -113,8 +115,9 @@ long NGram::count_polys() {
   double num_points = points_remaining.size();
   double points_completed = 0;
   for (auto p_it=points_remaining.begin(); p_it!=points_remaining.end(); ++p_it) {
-    std::cout << "\r" << ((points_completed+1)*100/num_points) << "% of points with "
-	      << num_polygons/2 << " polys found\t\t\t" << std::flush;
+    //std::cout << "\r" << ((points_completed+1)*100/num_points) << "% of points with "
+    //	      << num_polygons/2 << " polys found\t\t\t" << std::flush;
+    
     //std::cout << "\n\ninitiating counting procedure on point: " << *p_it << std::endl;
     //std::cout << "remaining lines: " << lines_remaining.size() << std::endl;
     point p = *p_it;
@@ -125,7 +128,7 @@ long NGram::count_polys() {
     // this is written this way for debugging purposes
     int poly_count = trace_path(h, lines_remaining);
     num_polygons += poly_count;
-    //std::cout << "trace finished" << std::endl;
+    std::cout << std::endl;
     
     // remove lines that contained the specified starting_point
     for (auto it=lines_remaining.begin(); it!=lines_remaining.end();) {
@@ -174,7 +177,11 @@ long NGram::trace_path (std::vector<point> history, std::vector<line> lines_rema
     //std::cout << "option: " << *it << std::endl;
     // if the other point completes the polygon, increase polygon counter
     if (it->other(current_point)==target_point) {
-      if (history.size() > 2) num_polygons++;
+      if (history.size() > 2) {
+	num_polys++;
+	std::cout << "\r" << num_polys/2 << std::flush;
+	num_polygons++;
+      }
     }
     // otherwise, continue tracing
     else {
