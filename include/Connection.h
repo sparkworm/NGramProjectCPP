@@ -7,7 +7,7 @@
 
 struct Connection {
   Connection();
-  Connection(a,b);
+  Connection(a_val,b_val);
   
   unsigned int a;
   unsigned int b;
