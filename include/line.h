@@ -21,6 +21,8 @@ struct line {
   std::string to_string() const;
   
   friend std::ostream& operator << (std::ostream& os, const line& l);
+
+  bool operator == (const line& other);
 };
 
 #endif
