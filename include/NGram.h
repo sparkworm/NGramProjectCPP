@@ -7,14 +7,15 @@
 class NGram {
 public:
   // Constructors
-  NGram(int num_points);
-  NGram(int num_points, double radius);
+  //NGram(int num_points);
+  //NGram(int num_points, double radius);
+  
   // Destructor
   //~NGram();
   std::string to_string();
-  void generate(int num_points, double radius);
+  virtual void generate(int num_points, double radius) = 0;
   // Member functions
-  long count_polys();
+  virtual long count_polys() = 0;
 private:
 };
 

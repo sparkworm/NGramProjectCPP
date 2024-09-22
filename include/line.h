@@ -22,7 +22,7 @@ struct line {
   
   friend std::ostream& operator << (std::ostream& os, const line& l);
 
-  bool operator == (const line& other);
+  bool operator == (const line& other) const;
 };
 
 #endif

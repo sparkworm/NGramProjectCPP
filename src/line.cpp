@@ -29,7 +29,7 @@ std::ostream& operator << (std::ostream& os, const line& l) {
   return os;
 }  
 
-bool operator == (const line& other) {
+bool line::operator == (const line& other) const {
   return (are_points_within_error(a, other.a) || are_points_within_error(a, other.b))
     && (are_points_within_error(b, other.a) || are_points_within_error(b, other.b));
 }

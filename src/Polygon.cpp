@@ -28,11 +28,20 @@ bool Polygon::does_line_intersect(line l) {
   return false;
 }
 
+bool Polygon::can_slice_poly_off(line l) {
+  return (points_of_intersection(l).size() == 2);
+}
+
+/* This function returns one of the pieces created when intersected by a line.  The original polygon
+ * becomes the other piece.
+ * This function should only be called if can_slice_poly_off() is true
+ */
 Polygon Polygon::slice_poly_off(line l) {
-  std::vector<point> poi = points_of_intersection(l);
-  if (poi.size() != 2) {
-    return NULL; // this is wrong!!
-  }
+  std::vector<point> points_below;
+  std::vector<point> points_above;
+
+  // INCOMPLETE
+}
   
 
 std::vector<point> points_of_intersection(line l) {

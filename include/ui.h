@@ -9,6 +9,10 @@
 // The main io loop.  Should return an exit code.
 int io_loop();
 
+int line_approach_loop();
+
+int poly_approach_loop();
+
 void start_timer();
 
 void end_timer();

@@ -2,6 +2,8 @@
 #include "ui.h"
 
 #include "NGram.h"
+#include "NGramLineApproach.h"
+#include "NGramPolyApproach.h"
 #include "Timer.h"
 // might remove this later, it's only here for testing purposes at the moment
 #include "utils.h"
@@ -17,9 +19,13 @@ std::string main_menu = std::string("\n\nWhat would you like to do?"
 				    "\n\t4: View shape");
 
 int io_loop() {
+  return line_approach_loop();
+}
+
+int line_approach_loop() {
   Timer timer;
   // initialize a pointer to what will later be the NGram
-  NGram* n_gram = nullptr;
+  NGramLineApproach* n_gram = nullptr;
   // keeps track over whether the current n_gram has been fractured
   // this is necessary because they must be fractured to count without error
   bool fractured = false;
@@ -43,7 +49,7 @@ int io_loop() {
 	num_vertices = query_input<int>(std::string("How many vertices would you like?\n"));
       }
       // Assign the now created NGram to the n_gram pointer.
-      n_gram = new NGram(num_vertices);
+      n_gram = new NGramLineApproach(num_vertices);
       fractured = false;
       break;
     }

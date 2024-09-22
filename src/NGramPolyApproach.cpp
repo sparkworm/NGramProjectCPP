@@ -8,7 +8,7 @@
 #include <vector>
 
 /* I expect this function to include all of the rings of hell */
-void NGram::generate(int num_points, double radius) {
+void NGramPolyApproach::generate(int num_points, double radius) {
   std::vector<point> vertices;
   vertices.reserve(num_points);
 
@@ -64,9 +64,9 @@ void NGram::generate(int num_points, double radius) {
 	connections.push_back(con);
       }
     }
-  } 
+  }
 }
 
-long NGram::count_polys();
+long NGramPolyApproach::count_polys();
 
 std::string to_string();

@@ -10,8 +10,15 @@
 
 long num_polys = 0;
 
+NGramLineApproach::NGramLineApproach(int num_vertices) {
+  generate(num_vertices, 100.0);
+}
+NGramLineApproach::NGramLineApproach(int num_vertices, double radius) {
+  generate(num_vertices, radius);
+}
+
 // Private functions
-void NGram::generate(int num_points, double radius) {
+void NGramLineApproach::generate(int num_points, double radius) {
   std::vector<point> vertices;
   vertices.reserve(num_points);
 
@@ -57,7 +64,7 @@ void NGramLineApproach::fracture() {
   }
 }
 
-std::vector<point> NGram::get_intersection_points() {
+std::vector<point> NGramLineApproach::get_intersection_points() {
   std::vector<point> poi;
   // find all intersections
   for (auto it1=lines_.begin(); it1!=lines_.end(); ++it1) {
@@ -80,7 +87,7 @@ std::vector<point> NGram::get_intersection_points() {
 /* 
  * Should lead into a recursive function that branches into the various paths
  */
-long NGram::count_polys() {
+long NGramLineApproach::count_polys() {
   long num_polygons = 0;
 
   std::vector<line> lines_remaining = lines_;
@@ -184,7 +191,7 @@ long NGramLineApproach::trace_path (std::vector<point> history, std::vector<line
 std::string NGramLineApproach::to_string() {
   std::string str = "Lines: \n";
   
-  for (auto l : NGram::lines_) {
+  for (auto l : lines_) {
     str += "\n" + l.to_string();
   }
 
