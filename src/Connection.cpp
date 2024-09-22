@@ -8,5 +8,6 @@ bool Connection::has_node(unsigned int node) {
 }
 
 bool Connection::shares_node(Connection other) {
-  return (other.a==a || other.a==b || other.b==a || other.b==b);
+  return has_node(other.a) || has_node(other.b);
+  //return (other.a==a || other.a==b || other.b==a || other.b==b);
 }
