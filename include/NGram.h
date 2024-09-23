@@ -12,7 +12,7 @@ public:
   
   // Destructor
   //~NGram();
-  std::string to_string();
+  virtual std::string to_string() = 0;
   virtual void generate(int num_points, double radius) = 0;
   // Member functions
   virtual long count_polys() = 0;

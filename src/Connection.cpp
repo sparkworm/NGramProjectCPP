@@ -14,6 +14,6 @@ bool Connection::shares_node(Connection other) {
 
 /* returns the node that doesn't equal this.
    Will return b if neither equals this */
-unsigned int other_node(unsigned int node) {
+unsigned int Connection::other_node(unsigned int node) {
   return (node==a) ? b : a;
 }

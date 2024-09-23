@@ -13,6 +13,7 @@ class NGramPolyApproach : public NGram {
   NGramPolyApproach(int num_vertices, double radius);
   void generate (int num_vertices, double radius) override;
   long count_polys() override;
+  std::string to_string() override;
  private:
   std::vector<Connection> connections;
 

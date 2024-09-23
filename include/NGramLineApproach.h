@@ -17,7 +17,7 @@ class NGramLineApproach : public NGram {
   void fracture();
   std::vector<point> get_intersection_points();
   //std::vector<line> get_lines_with_point(point& p);
-  std::string to_string();
+  std::string to_string() override;
  private:
   std::vector<line> lines_;
   long trace_path (std::vector<point> history, std::vector<line> lines_remaining);

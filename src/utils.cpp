@@ -44,6 +44,24 @@ bool is_point_on_segment(point& p, line& l) {
     && p.x < std::max(l.a.x, l.b.x);
 }  
 
+/* This function returns whether a point falls within a specific line segment.
+ * NOTE: This function DOES check whether the point fits between the segment endpoints.
+ * This function specifically returns true if the point is on one of then endpoints.
+ */
+bool is_point_on_segment_inclusive(point& p, line& l) {
+  // first check if point is on line
+  if (!is_point_on_line(p, l)) return false;
+  std::cout << "Point is on line" << std::endl;
+  // if the line is vertical, check that it's within y values
+  if (is_line_vertical(l)) {
+    return std::min(l.a.y, l.b.y) <= p.y
+      && p.y <= std::max(l.a.y, l.b.y);
+  }
+  
+  return std::min(l.a.x, l.b.x) <= p.x
+    && p.x <= std::max(l.a.x, l.b.x);
+}
+
 bool is_line_vertical(line& l) {
   return std::abs(l.a.x - l.b.x) < error_limit;
 }
@@ -59,10 +77,22 @@ bool is_point_above_line(point& p, line& l) {
   return (l.a.y - p.y) < line_slope(l) * (l.a.x - p.x);
 }
 
+bool are_segments_same_line(line& l1, line& l2) {
+  return std::abs(line_slope(l1) - line_slope(l2)) < error_limit
+    && std::abs(line_value_at(l1, 0.0) - line_value_at(l2, 0.0)) < error_limit;
+}
+
 double line_slope(line& l) {
   return (l.a.y - l.b.y) / (l.a.x - l.b.x);
 }
 
+/* Returns the y value of the line at a given x, or the x at a given y (if vertical) */
+double line_value_at(line& l, const double& v) {
+  if (is_line_vertical(l)) {
+    return l.a.x;
+  }
+  return line_slope(l) * (v - l.a.x) + l.a.x;
+}
 
 /* Simply returns whether two lines intersect anywhere
  * The only time that it will return false is if the lines are parallel
@@ -77,6 +107,7 @@ bool do_lines_intersect(line& l1, line& l2) {
 
 /* Function that determines whether two line segments intersect.
  * DOES take into account whether the intersection occurs ON SEGMENTS.
+ * Returns false if the intersection is on an endpoint
  */
 bool do_segments_intersect(line& l1, line& l2) {
   if (!do_lines_intersect(l1, l2)) return false;
@@ -85,6 +116,19 @@ bool do_segments_intersect(line& l1, line& l2) {
   point p = intersection_point(l1, l2);
 
   return is_point_on_segment(p, l1) && is_point_on_segment(p, l2);
+}
+
+/* Function that determines whether two line segments intersect.
+ * DOES take into account whether the intersection occurs ON SEGMENTS.
+ * Returns true if the intersection is on an endpoint
+ */
+bool do_segments_intersect_inclusive(line& l1, line& l2) {
+  if (!do_lines_intersect(l1, l2)) return false;
+
+  // find the point at which the lines interesect
+  point p = intersection_point(l1, l2);
+  
+  return is_point_on_segment_inclusive(p, l1) && is_point_on_segment_inclusive(p, l2);
 }
 
 /* Assumes that the lines DO intersect.  
