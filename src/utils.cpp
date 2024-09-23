@@ -48,6 +48,17 @@ bool is_line_vertical(line& l) {
   return std::abs(l.a.x - l.b.x) < error_limit;
 }
 
+/* Returns whether a point is above a line.  If the line is vertical, this will return whether the
+ * point was to the left of the line.
+ * Note that this will return false if the point is on the line
+ */
+bool is_point_above_line(point& p, line& l) {
+  if (is_line_vertical(l)) {
+    return l.a.x > p.x;
+  }
+  return (l.a.y - p.y) < line_slope(l) * (l.a.x - p.x);
+}
+
 double line_slope(line& l) {
   return (l.a.y - l.b.y) / (l.a.x - l.b.x);
 }
