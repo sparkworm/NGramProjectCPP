@@ -15,5 +15,8 @@ class NGramPolyApproach : public NGram {
   long count_polys() override;
  private:
   std::vector<Connection> connections;
+
+  long compounds_with_poly(unsigned int poly,
+			   std::vector<Connection> available_connections);
 };
 #endif

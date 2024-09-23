@@ -15,7 +15,7 @@ struct Connection {
   bool has_node(unsigned int node);
   bool shares_node(Connection other);
 
-  
+  unsigned int other_node(unsigned int node);
 };
 
 #endif

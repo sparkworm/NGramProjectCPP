@@ -67,6 +67,23 @@ void NGramPolyApproach::generate(int num_points, double radius) {
   }
 }
 
-long NGramPolyApproach::count_polys();
+long NGramPolyApproach::count_polys() {
+  return compounds_with_poly(connections.at(0).a, connections);
+}
+
+long NGramPolyApproach::compounds_with_poly(unsigned int poly,
+					    std::vector<Connection> available_connections) {
+  long count = 1;
+  std::vector<Connections> connected;
+  for (Connection c : available_connections) {
+    if (c.has_node(poly)) connected.push_back(c);
+  }
+  // remove self from list of connections
+  for (Connection c : connected) {
+    count += compounds_with_poly(c.other_node(poly), available_connections);
+    // remove other poly from list of connections.
+  }
+  return count;
+}
 
 std::string to_string();

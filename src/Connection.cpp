@@ -11,3 +11,9 @@ bool Connection::shares_node(Connection other) {
   return has_node(other.a) || has_node(other.b);
   //return (other.a==a || other.a==b || other.b==a || other.b==b);
 }
+
+/* returns the node that doesn't equal this.
+   Will return b if neither equals this */
+unsigned int other_node(unsigned int node) {
+  return (node==a) ? b : a;
+}
