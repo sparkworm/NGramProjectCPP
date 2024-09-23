@@ -13,6 +13,7 @@
 class Polygon {
  public:
   Polygon(std::vector<point> points);
+  Polygon(std::vector<line> lines);
   
   bool does_polygon_share_border(Polygon other);
   bool does_line_intersect(line l);
