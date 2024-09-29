@@ -19,7 +19,7 @@ bool are_points_within_error(const point& a, const point& b) {
 /* This function returns whether a point falls on a specific line
  * NOTE: this DOES NOT check if the point falls on the specified SEGMENT
  */
-bool is_point_on_line(point& p, line& l) {
+bool is_point_on_line(const point& p, const line& l) {
   if (is_line_vertical(l)) {
     return std::abs(l.a.x - p.x) < error_limit;
   }
@@ -30,7 +30,7 @@ bool is_point_on_line(point& p, line& l) {
  * NOTE: This function DOES check whether the point fits between the segment endpoints.
  * This function specifically returns false if the point is on one of then endpoints.
  */
-bool is_point_on_segment(point& p, line& l) {
+bool is_point_on_segment(const point& p, const line& l) {
   // first check if point is on line
   if (!is_point_on_line(p, l)) return false;
   // specifically return false if the point is on one of the endpoints
@@ -48,21 +48,24 @@ bool is_point_on_segment(point& p, line& l) {
  * NOTE: This function DOES check whether the point fits between the segment endpoints.
  * This function specifically returns true if the point is on one of then endpoints.
  */
-bool is_point_on_segment_inclusive(point& p, line& l) {
+bool is_point_on_segment_inclusive(const point& p, const line& l) {
   // first check if point is on line
   if (!is_point_on_line(p, l)) return false;
-  std::cout << "Point is on line" << std::endl;
   // if the line is vertical, check that it's within y values
   if (is_line_vertical(l)) {
     return std::min(l.a.y, l.b.y) <= p.y
-      && p.y <= std::max(l.a.y, l.b.y);
+      && p.y <= std::max(l.a.y, l.b.y)
+      || are_points_within_error(p, l.a)
+      || are_points_within_error(p, l.b);
   }
   
   return std::min(l.a.x, l.b.x) <= p.x
-    && p.x <= std::max(l.a.x, l.b.x);
+    && p.x <= std::max(l.a.x, l.b.x)
+    || are_points_within_error(p, l.a)
+    || are_points_within_error(p, l.b);
 }
 
-bool is_line_vertical(line& l) {
+bool is_line_vertical(const line& l) {
   return std::abs(l.a.x - l.b.x) < error_limit;
 }
 
@@ -70,34 +73,47 @@ bool is_line_vertical(line& l) {
  * point was to the left of the line.
  * Note that this will return false if the point is on the line
  */
-bool is_point_above_line(point& p, line& l) {
+bool is_point_above_line(const point& p, const line& l) {
   if (is_line_vertical(l)) {
-    return l.a.x > p.x;
+    return std::abs(l.a.x - p.x) > error_limit && l.a.x > p.x;
   }
   return (l.a.y - p.y) < line_slope(l) * (l.a.x - p.x);
 }
 
-bool are_segments_same_line(line& l1, line& l2) {
+bool are_segments_same_line(const line& l1, const line& l2) {
+  if (is_line_vertical(l1) || is_line_vertical(l2)) {
+    if (is_line_vertical(l1) && is_line_vertical(l2)) {
+      return std::abs(l1.a.x - l2.b.x) < error_limit;
+    }
+    return false;
+  }
+  if (std::abs(line_slope(l1) - line_slope(l2)) < error_limit
+	&& std::abs(line_value_at(l1, 0.0) - line_value_at(l2, 0.0)) < error_limit) {
+    std::cout << "lines not vertical (phew)" << std::endl;
+    std::cout << "difference in slope: " << (line_slope(l1) - line_slope(l2)) << std::endl;
+    std::cout << "difference in y-intercept: "
+	      << (line_value_at(l1, 0.0) - line_value_at(l2, 0.0)) << std::endl;
+  }
   return std::abs(line_slope(l1) - line_slope(l2)) < error_limit
     && std::abs(line_value_at(l1, 0.0) - line_value_at(l2, 0.0)) < error_limit;
 }
 
-double line_slope(line& l) {
+double line_slope(const line& l) {
   return (l.a.y - l.b.y) / (l.a.x - l.b.x);
 }
 
 /* Returns the y value of the line at a given x, or the x at a given y (if vertical) */
-double line_value_at(line& l, const double& v) {
+double line_value_at(const line& l, const double& v) {
   if (is_line_vertical(l)) {
     return l.a.x;
   }
-  return line_slope(l) * (v - l.a.x) + l.a.x;
+  return line_slope(l) * (v - l.a.x) + l.a.y;
 }
 
 /* Simply returns whether two lines intersect anywhere
  * The only time that it will return false is if the lines are parallel
  */
-bool do_lines_intersect(line& l1, line& l2) {
+bool do_lines_intersect(const line& l1, const line& l2) {
   if (is_line_vertical(l1) || is_line_vertical(l2)) {
     return !(is_line_vertical(l1) && is_line_vertical(l2));
   }
@@ -109,7 +125,7 @@ bool do_lines_intersect(line& l1, line& l2) {
  * DOES take into account whether the intersection occurs ON SEGMENTS.
  * Returns false if the intersection is on an endpoint
  */
-bool do_segments_intersect(line& l1, line& l2) {
+bool do_segments_intersect(const line& l1, const line& l2) {
   if (!do_lines_intersect(l1, l2)) return false;
 
   // find the point at which the lines interesect
@@ -122,7 +138,7 @@ bool do_segments_intersect(line& l1, line& l2) {
  * DOES take into account whether the intersection occurs ON SEGMENTS.
  * Returns true if the intersection is on an endpoint
  */
-bool do_segments_intersect_inclusive(line& l1, line& l2) {
+bool do_segments_intersect_inclusive(const line& l1, const line& l2) {
   if (!do_lines_intersect(l1, l2)) return false;
 
   // find the point at which the lines interesect
@@ -135,7 +151,7 @@ bool do_segments_intersect_inclusive(line& l1, line& l2) {
  * Also assumes that l1 and l2 are NOT BOTH vertical.  
  * Does NOT bother to check if the intersection point is within a segment.  
  */
-point intersection_point(line& l1, line& l2) {
+point intersection_point(const line& l1, const line& l2) {
 
   if (is_line_vertical(l1)) {
     point p;
@@ -161,11 +177,17 @@ point intersection_point(line& l1, line& l2) {
   return p;
 }
 
+point midpoint(const line& l) {
+  if (is_line_vertical(l)) return point(l.a.x,(l.a.y + l.b.y) / 2.0);
+  double x = (l.a.x + l.b.x) / 2.0;
+  return point(x, line_value_at(l,x));
+}
+
 /* This function turns one line into two lines, with the specified point being a shared point
  * between them
  * It is IMPERATIVE that the point it KNOWN to be on the line
  */
-std::vector<line> split_line(line& l, point& p) {
+std::vector<line> split_line(const line& l, const point& p) {
   std::vector<line> new_lines;
   // can potentially add a resize to minimally improve performance
   
@@ -178,7 +200,7 @@ std::vector<line> split_line(line& l, point& p) {
   return new_lines;
 }
   
-std::vector<line> get_lines_with_point(std::vector<line>& lines, point& p) {
+std::vector<line> get_lines_with_point(const std::vector<line>& lines, const point& p) {
   std::vector<line> lines_with_point;
   for (auto it=lines.begin(); it!=lines.end(); ++it) {
     if (are_points_within_error(it->a, p) || are_points_within_error(it->b, p)) {

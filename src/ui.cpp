@@ -45,26 +45,43 @@ int io_loop() {
 int poly_approach_loop () {
   /* TESTING STUFF */
   std::vector<line> poly_lines;
-  poly_lines.push_back(line(point(100,0), point(0,100)));
-  poly_lines.push_back(line(point(-100,0), point(0,100)));
-  poly_lines.push_back(line(point(-100,0), point(0,-100)));
-  poly_lines.push_back(line(point(100,0), point(0,-100)));
+  poly_lines.push_back(line(point(50.000000, -86.602540), point(100.000000, 0.000000)));
+  poly_lines.push_back(line(point(-50.000000, 86.602540), point(-100.000000, 0.000000)));
+  poly_lines.push_back(line(point(-100.000000, 0.000000), point(-50.000000, -86.602540)));
+  poly_lines.push_back(line(point(-50.000000, -86.602540), point(50.000000, -86.602540)));
+  poly_lines.push_back(line(point(100.000000, -0.000000), point(-50.000000, 86.602540)));
+  /*
+  poly_lines.push_back(line(point(-11.803399, 36.327126), point(30.901699, 22.451399)));
+  poly_lines.push_back(line(point(-80.901699, -58.778525), point(30.901699, -22.451399)));
+  poly_lines.push_back(line(point(-80.901699, -58.778525), point(-11.803399, 36.327126)));
+  poly_lines.push_back(line(point(30.901699, 22.451399), point(30.901699, -22.451399))); 
+  */
+ 
+  line slicer(point(100, 0), point(50, -86.6025));
+
+  std::vector<Polygon> p_vector;
+
   Polygon poly(poly_lines);
-
-  std::cout << "Fresh Polygon: " << poly.to_string() << std::endl;
-
-  Polygon poly2 = poly.slice_poly_off(line(point(100,0), point(-100,0)));
-
-  Polygon poly3 = poly.slice_poly_off(line(point(0,-100), point(0,100)));
-  Polygon poly4 = poly2.slice_poly_off(line(point(0,-100), point(0,100)));
   
-  std::cout << poly.to_string() << std::endl;
-  std::cout << poly2.to_string() << std::endl;
-  std::cout << poly3.to_string() << std::endl;
-  std::cout << poly4.to_string() << std::endl;
+  p_vector.push_back(poly);
+  //std::cout << "Can slice poly? " << p_vector.at(0).can_slice_poly_off(slicer) << std::endl;
+  //p_vector.push_back(p_vector.at(0).slice_poly_off(slicer));
 
-  std::cout << poly.can_slice_poly_off(line(point(100,0), point(0,100))) << std::endl;
+  line l1(point(100, 0), point(50, -86.60254)),
+    l2(point(50.000000, -86.602540), point(100.000000, 0.000000));
   
+  std::cout << "Are segments same line? " << are_segments_same_line(l1, l2) << std::endl;
+  std::cout << "Slopes: " << line_slope(l1) << ", " << line_slope(l2) << std::endl;
+  std::cout << "Y-intercepts: " << line_value_at(l1, 0.0) << ", " << line_value_at(l2, 0.0)
+	    << std::endl;
+
+  //std::cout << "Fresh Polygon: " << poly.to_string() << std::endl;
+  //Polygon poly2 = poly.slice_poly_off(slicer);
+  
+  std::cout << p_vector.at(0).to_string() << std::endl;
+  //std::cout << p_vector.at(1).to_string() << std::endl;
+
+  std::cout << "-------------------------------------------------------------" << std::endl;
   
   Timer timer;
   // initialize a pointer to what will later be the NGram

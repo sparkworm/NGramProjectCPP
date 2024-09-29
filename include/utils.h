@@ -6,21 +6,22 @@
 
 #include <vector>
 
-double distance_between_points(point& a, point& b);
+double distance_between_points(const point& a, const point& b);
 bool are_points_within_error(const point& a, const point& b);
-bool is_point_on_line(point& p, line& l);
-bool is_point_on_segment(point& p, line& l);
-bool is_point_on_segment_inclusive(point& p, line& l);
-bool is_line_vertical(line& l);
-bool is_point_above_line(point& p, line& l);
-bool are_segments_same_line(line& l1, line& l2);
-double line_slope(line& l);
-double line_value_at(line& l, const double& v);
-bool do_lines_intersect(line& l1, line& l2);
-bool do_segments_intersect(line& l1, line& l2);
-bool do_segments_intersect_inclusive(line& l1, line& l2);
-point intersection_point(line& a, line& b);
-std::vector<line> split_line(line& l, point& p);
-std::vector<line> get_lines_with_point(std::vector<line>& lines, point& p);
+bool is_point_on_line(const point& p, const line& l);
+bool is_point_on_segment(const point& p, const line& l);
+bool is_point_on_segment_inclusive(const point& p, const line& l);
+bool is_line_vertical(const line& l);
+bool is_point_above_line(const point& p, const line& l);
+bool are_segments_same_line(const line& l1, const line& l2);
+double line_slope(const line& l);
+double line_value_at(const line& l, const double& v);
+bool do_lines_intersect(const line& l1, const line& l2);
+bool do_segments_intersect(const line& l1, const line& l2);
+bool do_segments_intersect_inclusive(const line& l1, const line& l2);
+point intersection_point(const line& a, const line& b);
+point midpoint(const line& l);
+std::vector<line> split_line(const line& l, const point& p);
+std::vector<line> get_lines_with_point(const std::vector<line>& lines, const point& p);
 
 #endif

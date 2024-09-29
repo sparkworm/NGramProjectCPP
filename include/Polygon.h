@@ -18,6 +18,7 @@ class Polygon {
   bool does_polygon_share_border(Polygon other);
   bool does_line_intersect(line l);
   bool can_slice_poly_off(line l);
+  bool is_point_vertex(point p);
   Polygon slice_poly_off(line l);
   std::vector<point> points_of_intersection(line l);
   std::string to_string();

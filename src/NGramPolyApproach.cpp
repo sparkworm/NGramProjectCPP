@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+#include <algorithm>
+
 #include "math_constants.h"
 #include "Polygon.h"
 #include "Connection.h"
@@ -23,7 +25,7 @@ NGramPolyApproach::NGramPolyApproach(int num_vertices, double radius) {
 /* I expect this function to include all of the rings of hell */
 void NGramPolyApproach::generate(int num_points, double radius) {
   std::vector<point> vertices;
-  vertices.reserve(num_points);
+  //vertices.reserve(num_points);
 
   // Generate the main vertices
   for (int i=0; i<num_points; i++) {
@@ -59,19 +61,30 @@ void NGramPolyApproach::generate(int num_points, double radius) {
       std::cout << "Line to check: " << l << std::endl;
       // iterate through polys, slicing those that contain the line
       // since polys should all be convex, none should have to be sliced twice
-      for (Polygon p : polys) {
-	//if (p.does_line_intersect(l)) {
-	if (p.can_slice_poly_off(l)) {
+      for (size_t pi=0; pi<polys.size(); pi++) {
+	if (polys.at(pi).can_slice_poly_off(l)) {
 	  std::cout << "Intersection found!" << std::endl;
-	  polys.push_back(p.slice_poly_off(l));
-	  //std::cout << polys.at(0).to_string() << std::endl;
-	  //std::cout << polys.at(polys.size()-1).to_string() << std::endl;
+	  std::cout << "Splitting polygon: " << polys.at(pi).to_string() << " with " << l << std::endl;
+	  polys.push_back(polys.at(pi).slice_poly_off(l));
 	}
       }
+      /*
+      //for (Polygon& p : polys) {
+      //for (auto it=polys.begin(); it!=polys.end();) {
+	if (p.can_slice_poly_off(l)) {
+	  std::cout << "Intersection found!" << std::endl;
+	  std::cout << "Splitting polygon: " << p.to_string() << " with " << l << std::endl;
+	  polys.push_back(p.slice_poly_off(l));
+	  }
+	  }*/
     }
   }
 
   std::cout << "Number of polys after slicing: " << polys.size() << std::endl;
+
+  for (Polygon p : polys) {
+    std::cout << p.to_string() << std::endl;
+  }
   
   // create vector of uids
   /*
@@ -85,14 +98,18 @@ void NGramPolyApproach::generate(int num_points, double radius) {
   // now that all polys are created, we can populate connections
   for (size_t i=0; i<polys.size(); i++) {
     //unsigned int i_uid = uids.at(i);
+    //std::cout << "i: " << i << std::endl;
     for (size_t j=i+1; j<polys.size(); j++) {
       //unsigned int j_uid = uids.at(j);
+      //std::cout << "\tj: " << j << std::endl;
       if (polys.at(i).does_polygon_share_border(polys.at(j))) {
+	//std::cout << "border shared." << std::endl;
 	Connection con(i, j);
 	connections.push_back(con);
       }
     }
   }
+  std::cout << "Number of connections: " << connections.size() << std::endl;
 }
 
 long NGramPolyApproach::count_polys() {

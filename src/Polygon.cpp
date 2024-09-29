@@ -37,10 +37,20 @@ bool Polygon::does_line_intersect(line l) {
   return false;
 }
 
+bool Polygon::is_point_vertex(point p) {
+  for (line l : lines_) {
+    if (l.a==p || l.b==p) return true;
+  }
+  return false;
+}
+
 bool Polygon::can_slice_poly_off(line l) {
-  //return does_line_intersect(l);
-  std::cout << points_of_intersection(l).size() << std::endl;
-  return (points_of_intersection(l).size() == 2);
+  std::vector<point> poi = points_of_intersection(l);
+  std::cout << poi.size() << ": " << std::endl;
+  for (auto p : poi) {
+    std::cout << "\t" <<  p.to_string() << std::endl;
+  }
+  return poi.size() == 2;
 }
 
 /* This function returns one of the pieces created when intersected by a line.  
@@ -53,50 +63,55 @@ Polygon Polygon::slice_poly_off(line l) {
   
   /* iterate through lines_, placing each segment into either lines_above or lines_below */
   for (line seg : lines_) {
+    std::cout << "First segment: " << lines_.at(0) << std::endl;
     /* if the segments intersect non-inclusively, that means that one point is above and one 
        point is below.  This is important for later */
     if (do_segments_intersect(seg, l)) {
       std::cout << "a" << std::endl;
       point poi = intersection_point(seg, l);
-      line seg1(seg.a, poi), seg2(seg.a, poi);
+      line seg1(seg.a, poi), seg2(seg.b, poi);
+      std::cout << "\tSeg1: " << seg1.to_string() << std::endl;
+      std::cout << "\tSeg2: " << seg2.to_string() << std::endl;
       /* Check if seg1 is above the line */
-      if (is_point_above_line(seg.a, l)) {
+      //if (is_point_above_line(seg1.a, l) || is_point_above_line(seg1.b, l)) {
+      if (is_point_above_line(midpoint(seg), l)) {
 	lines_above.push_back(seg1);
 	lines_below.push_back(seg2);
       }
-      else if (is_point_above_line(seg.b, l)) {
+      //if (is_point_above_line(seg2.a, l) || is_point_above_line(seg2.b, l)) {
+      else {
 	lines_above.push_back(seg2);
 	lines_below.push_back(seg1);
-      }	
+      }
     }
     /* Since intersection has already been checked for, if one point is above, 
        so is the other */
-    else if (is_point_above_line(seg.a, l) || is_point_above_line(seg.b, l)) {
-      std::cout << "b" << std::endl;
+    //else if (is_point_above_line(seg.a, l) || is_point_above_line(seg.b, l)) {
+    else if (is_point_above_line(midpoint(seg), l)) {
+      std::cout << "Seg " << seg.to_string() << " is above " << l.to_string()
+		<< " " << is_point_above_line(seg.a, l)
+		<< " " << is_point_above_line(seg.b, l) << std::endl;
       lines_above.push_back(seg);
     }
     // redundant
-    else if (!is_point_above_line(seg.a, l) || !is_point_above_line(seg.b, l)) {
-      std::cout << "c" << std::endl;
+    //else if (!is_point_above_line(seg.a, l) || !is_point_above_line(seg.b, l)) {
+    else {
+      std::cout << "Seg " << seg.to_string() << " is below " << l.to_string() << std::endl;
       lines_below.push_back(seg);
     }
-    else {
-      std::cout << "This is bad I think" << std::endl;
-      // bad
-    }
   }
-
+  
   /* There should now be two points on both lines_above and lines_below that aren't 
      connected by a line */
-  std::cout << "test" << std::endl;
   std::vector<point> pois = points_of_intersection(l);
-  std::cout << "test2" << std::endl;
   line cropped_l(pois.at(0), pois.at(1));
+  std::cout << "Cropped line: " << cropped_l.to_string() << std::endl;
   lines_above.push_back(cropped_l);
   lines_below.push_back(cropped_l);
-  
   lines_ = lines_above;
-  std::cout << "lines_ length: " << lines_.size() << std::endl;
+  std::cout << "Self (lines above): " << to_string() << std::endl;
+  std::cout << "Lines below: " << std::endl;
+  for (line l : lines_below) std::cout << "\t" << l << std::endl;
   Polygon new_poly(lines_below);
   return new_poly;
 }
@@ -108,8 +123,7 @@ std::vector<point> Polygon::points_of_intersection(line l) {
        && std::find(poi.begin(), poi.end(), intersection_point(l, l2))==poi.end()) {
       poi.push_back(intersection_point(l, l2));
     }
-    else if (are_segments_same_line(l, l2)) {
-      std::cout << "two are the same: " << l << ", " << l2 << std::endl;
+    if (are_segments_same_line(l, l2)) {
       poi.clear();
       return poi;
     }
