@@ -74,7 +74,7 @@ Polygon Polygon::slice_poly_off(line l) {
       std::cout << "\tSeg2: " << seg2.to_string() << std::endl;
       /* Check if seg1 is above the line */
       //if (is_point_above_line(seg1.a, l) || is_point_above_line(seg1.b, l)) {
-      if (is_point_above_line(midpoint(seg), l)) {
+      if (is_point_above_line(midpoint(seg1), l)) {
 	lines_above.push_back(seg1);
 	lines_below.push_back(seg2);
       }

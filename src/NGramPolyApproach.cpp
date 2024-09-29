@@ -82,9 +82,11 @@ void NGramPolyApproach::generate(int num_points, double radius) {
 
   std::cout << "Number of polys after slicing: " << polys.size() << std::endl;
 
+  
   for (Polygon p : polys) {
     std::cout << p.to_string() << std::endl;
   }
+  
   
   // create vector of uids
   /*
