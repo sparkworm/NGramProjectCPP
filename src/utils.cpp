@@ -89,10 +89,6 @@ bool are_segments_same_line(const line& l1, const line& l2) {
   }
   if (std::abs(line_slope(l1) - line_slope(l2)) < error_limit
 	&& std::abs(line_value_at(l1, 0.0) - line_value_at(l2, 0.0)) < error_limit) {
-    std::cout << "lines not vertical (phew)" << std::endl;
-    std::cout << "difference in slope: " << (line_slope(l1) - line_slope(l2)) << std::endl;
-    std::cout << "difference in y-intercept: "
-	      << (line_value_at(l1, 0.0) - line_value_at(l2, 0.0)) << std::endl;
   }
   return std::abs(line_slope(l1) - line_slope(l2)) < error_limit
     && std::abs(line_value_at(l1, 0.0) - line_value_at(l2, 0.0)) < error_limit;
