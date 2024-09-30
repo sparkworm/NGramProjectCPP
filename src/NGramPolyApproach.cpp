@@ -80,20 +80,48 @@ void NGramPolyApproach::generate(int num_points, double radius) {
 }
 
 long NGramPolyApproach::count_polys() {
-  return compounds_with_poly(connections.at(0).a, connections);
+  long count = 0;
+  
+  std::vector<unsigned int> polys;
+  for (Connection c : connections) {
+    if (std::find(polys.begin(), polys.end(), c.a)==polys.end()) {
+      polys.push_back(c.a);
+    }
+    if (std::find(polys.begin(), polys.end(), c.b)==polys.end()) {
+      polys.push_back(c.b);
+    }
+  }
+
+  std::cout << "There are " << polys.size() << " polys" << std::endl;
+
+  std::vector<Connection> available_connections = connections;
+  for (unsigned int p : polys) {
+    long cwp = compounds_with_poly(p, available_connections);
+    count += cwp;
+    std::cout << "compounds with poly: " << cwp << std::endl;
+
+    // code created by chatgpt and modified by yours truly
+    available_connections.erase(std::remove_if(available_connections.begin(),
+					       available_connections.end(), [p](Connection c) {
+						 return c.has_node(p);
+					       }),
+				available_connections.end());
+  }
+  return count;
 }
 
 long NGramPolyApproach::compounds_with_poly(unsigned int poly,
 					    std::vector<Connection> available_connections) {
   long count = 1;
   std::vector<Connection> connected;
+  std::vector<Connection> new_available_connections;
   for (Connection c : available_connections) {
     if (c.has_node(poly)) connected.push_back(c);
+    else new_available_connections.push_back(c);
   }
-  // remove self from list of connections
+  // call recursive function for every connected node
   for (Connection c : connected) {
-    count += compounds_with_poly(c.other_node(poly), available_connections);
-    // remove other poly from list of connections.
+    count += compounds_with_poly(c.other_node(poly), new_available_connections);
   }
   return count;
 }
