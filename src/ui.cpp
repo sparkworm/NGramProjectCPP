@@ -8,6 +8,7 @@
 // might remove this later, it's only here for testing purposes at the moment
 #include "utils.h"
 #include "Polygon.h"
+#include <vector>
 
 #include <iostream>
 #include <limits>
@@ -43,12 +44,25 @@ int io_loop() {
 }
 
 int poly_approach_loop () {
+  /* DEBUGGING ZONE */
+
+  std::vector<Connection> connections;
+  connections.push_back(Connection(0,1));
+  connections.push_back(Connection(1,2));
+  connections.push_back(Connection(2,0));
+  
+  NGramPolyApproach test_n_gram(connections);
+
+  std::cout << "Test NGram poly count: " << test_n_gram.count_polys() << std::endl;
+  
+  /* END OF DEBUGGING ZONE */
   
   Timer timer;
   // initialize a pointer to what will later be the NGram
   NGramPolyApproach* n_gram = nullptr;
 
   while (true) {
+    
     int option = query_input<int>(poly_approach_main_menu);
     
     switch (option) {

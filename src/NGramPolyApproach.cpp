@@ -22,6 +22,8 @@ NGramPolyApproach::NGramPolyApproach(int num_vertices, double radius) {
   generate(num_vertices, radius);
 }
 
+NGramPolyApproach::NGramPolyApproach(std::vector<Connection> c) : connections(c) {}
+
 /* I expect this function to include all of the rings of hell */
 void NGramPolyApproach::generate(int num_points, double radius) {
   std::vector<point> vertices;
@@ -98,7 +100,7 @@ long NGramPolyApproach::count_polys() {
   for (unsigned int p : polys) {
     long cwp = compounds_with_poly(p, available_connections);
     count += cwp;
-    std::cout << "compounds with poly: " << cwp << std::endl;
+    std::cout << "\t\tcompounds with poly: " << cwp << std::endl;
 
     // code created by chatgpt and modified by yours truly
     available_connections.erase(std::remove_if(available_connections.begin(),
@@ -112,13 +114,28 @@ long NGramPolyApproach::count_polys() {
 
 long NGramPolyApproach::compounds_with_poly(unsigned int poly,
 					    std::vector<Connection> available_connections) {
+  std::cout << "new call.  Poly: " << poly << std::endl;
+  
   long count = 1;
   std::vector<Connection> connected;
   std::vector<Connection> new_available_connections;
   for (Connection c : available_connections) {
-    if (c.has_node(poly)) connected.push_back(c);
-    else new_available_connections.push_back(c);
+    std::cout << c.a << ", " << c.b;
+    if (c.has_node(poly)) {
+      connected.push_back(c);
+      std::cout << std::endl;
+    }
+    else {
+      new_available_connections.push_back(c);
+      std::cout << "    included" << std::endl;
+    }
   }
+
+  /*
+  std::cout << "Connections size: " << available_connections.size() << std::endl;
+  std::cout << "Removed connections: " << available_connections.size()
+    - new_available_connections.size() << std::endl; */
+  
   // call recursive function for every connected node
   for (Connection c : connected) {
     count += compounds_with_poly(c.other_node(poly), new_available_connections);
