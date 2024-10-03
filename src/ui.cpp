@@ -4,6 +4,7 @@
 #include "NGram.h"
 #include "NGramLineApproach.h"
 #include "NGramPolyApproach.h"
+#include "NGramMatrixApproach.h"
 #include "Timer.h"
 // might remove this later, it's only here for testing purposes at the moment
 #include "utils.h"
@@ -26,9 +27,16 @@ std::string poly_approach_main_menu = std::string("\n\nWhat would you like to do
 						  "\n\t2: Count polygons"
 						  "\n\t3: View shape");
 
+std::string matrix_approach_main_menu = std::string("What would you like to do?"
+						    "\n\t0: Quit"
+						    "\n\t1: Create shape"
+						    "\n\t2: Count polygons"
+						    "\n\t3: View shape");
+
 std::string approach_query = std::string("\n\nWhat approach would you like to use?"
-					  "\n\t0: line_approach"
-					  "\n\t1: poly_approach (better)");
+					 "\n\t0: line_approach"
+					 "\n\t1: poly_approach (bad)"
+					 "\n\t2: matrix_approach (best)");
 
 int io_loop() {
   int option = query_input<int>(approach_query);
@@ -38,9 +46,76 @@ int io_loop() {
     return line_approach_loop();
   case 1:
     return poly_approach_loop();
+  case 2:
+    return matrix_approach_loop();
   default:
     return 1;
   }
+}
+
+int matrix_approach_loop() {
+  Timer timer;
+  // initialize a pointer to what will later be the NGram
+  NGramMatrixApproach* n_gram = nullptr;
+
+  while (true) {
+    
+    int option = query_input<int>(matrix_approach_main_menu);
+    
+    switch (option) {
+    case 0:
+      std::cout << "Exiting..." << std::endl;
+      return 0;
+
+    case 1: {
+      std::cout << "Creating shape..." << std::endl;
+      // Ask for the number of main vertices that the NGram should have
+      int num_vertices = query_input<int>(std::string("How many vertices would you like?\n"));
+      // Continue asking for the number of vertices until a valid answer is given.
+      // The number of vertices must be greater than 3 in order to form an actual NGram.
+      while (num_vertices < 3) {
+	std::cout << "Number of vertices must be 3 or higher!" << std::endl;
+	num_vertices = query_input<int>(std::string("How many vertices would you like?\n"));
+      }
+      // Assign the now created NGram to the n_gram pointer.
+      n_gram = new NGramMatrixApproach(num_vertices);
+      break;
+    }
+
+    case 2:
+      std::cout << "Counting polygons..." << std::endl;
+      if (n_gram == nullptr) {
+	std::cout << "NO SHAPE DEFINED" << std::endl;
+      }
+      else {
+	timer.start();
+	long num_polys = n_gram->count_polys();
+	std::cout << "Number of polygons: " << num_polys << std::endl;
+	timer.stop();
+	timer.display_time_passed();
+      }
+      break;
+
+    case 3:
+      std::cout << "Printing shape..." << std::endl;
+      // Check if there is an NGram assigned to n_gram
+      if (n_gram != nullptr) {
+	// If there is an object, print NGram
+	std::cout << n_gram->to_string() << std::endl;
+      }
+      else {
+	// If the pointer is null, an NGram has not been created.
+	std::cout << "Shape has not yet been created!" << std::endl;
+      }
+      break;
+
+    default:
+      std::cout << "Unknown input" << std::endl;
+      break;
+    }
+  }
+  delete n_gram;
+  return 0;
 }
 
 int poly_approach_loop () {

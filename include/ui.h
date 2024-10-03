@@ -13,6 +13,8 @@ int line_approach_loop();
 
 int poly_approach_loop();
 
+int matrix_approach_loop();
+
 void start_timer();
 
 void end_timer();

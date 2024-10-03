@@ -8,7 +8,7 @@ CXXFLAGS = -std=c++17 -Iinclude -O3
 TARGET = build/PolyProject
 
 # Define the source files explicitly
-SRCS = src/main.cpp src/ui.cpp src/utils.cpp src/NGram.cpp src/NGramLineApproach.cpp src/NGramPolyApproach.cpp src/line.cpp src/point.cpp src/Timer.cpp src/Connection.cpp src/Polygon.cpp
+SRCS = src/main.cpp src/ui.cpp src/utils.cpp src/NGram.cpp src/NGramLineApproach.cpp src/NGramPolyApproach.cpp src/line.cpp src/point.cpp src/Timer.cpp src/Connection.cpp src/Polygon.cpp src/NGramMatrixApproach.cpp
 
 # Define the object files
 OBJS = $(SRCS:.cpp=.o)
