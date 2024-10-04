@@ -8,6 +8,8 @@
 #include "math_constants.h"
 #include "point.h"
 
+long live_poly_count;
+
 NGramMatrixApproach::NGramMatrixApproach(int num_vertices) {
   generate(num_vertices, 100.0);
 }
@@ -116,10 +118,12 @@ long NGramMatrixApproach::count_polys() {
   std::vector<std::vector<int>> adj_mat_backup = adj_mat;
 
   int p = 0;
-  
+  std::cout << std::endl;
   while (adj_mat.size() > 0) {
     const int const_p = p;
-    num_polygons+=trace_path(p, const_p, {});
+    std::vector<int> history;
+    history.resize(adj_mat.size());
+    num_polygons+=trace_path(p, const_p, history, 0);
     /* remove p from adj_mat */
     adj_mat.erase(adj_mat.begin());
     for (auto& vec : adj_mat) {
@@ -127,16 +131,19 @@ long NGramMatrixApproach::count_polys() {
     }
   }
 
+  std::cout << std::endl;
+  
   adj_mat = adj_mat_backup;
   
   return num_polygons / 2;
 }
 
 // the recursive part of the tracing algorithm
-long NGramMatrixApproach::trace_path (int point, const int& target, std::vector<int> history) {
+long NGramMatrixApproach::trace_path (int point, const int& target, std::vector<int> history, int depth) {
   long num_polygons = 0;
-
-  history.push_back(point);
+  depth++;
+  
+  history.at(point) = 1;
   
   // iterates through the adjacency vector of the given point
   for (size_t i=0; i<adj_mat.at(point).size(); i++) {
@@ -145,11 +152,14 @@ long NGramMatrixApproach::trace_path (int point, const int& target, std::vector<
     if (adj_mat.at(point).at(i)) {
       /* if the point is the target, and the search has gone on for more than 2 iterations,
 	 increase the poly count, since this means a poly has been traced */
-      if (i==target && history.size() > 2) {
+      if (i==target && depth > 2) {
 	num_polygons++;
+	live_poly_count++;
+	std::cout << "\r" << live_poly_count/2;
       }
-      else if (std::find(history.begin(), history.end(), i)==history.end()) {
-	num_polygons += trace_path(i, target, history);
+      /* checks if the point i has been visited */
+      else if (!history.at(i)) {
+	num_polygons += trace_path(i, target, history, depth);
       }
     }
   }

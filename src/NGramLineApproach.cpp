@@ -172,7 +172,7 @@ long NGramLineApproach::trace_path (std::vector<point> history, std::vector<line
     if (it->other(current_point)==target_point) {
       if (history.size() > 2) {
 	num_polys++;
-	std::cout << "\r" << num_polys/2 << std::flush;
+	std::cout << "\r" << num_polys/2;// << std::flush;
 	num_polygons++;
       }
     }

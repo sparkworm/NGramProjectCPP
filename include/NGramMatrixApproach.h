@@ -19,6 +19,6 @@ class NGramMatrixApproach : public NGram {
   std::string to_string() override;
  private:
   std::vector<std::vector<int>> adj_mat;
-  long trace_path (int point, const int& target, std::vector<int> history);
+  long trace_path (int point, const int& target, std::vector<int> history, int depth);
 };
 #endif
