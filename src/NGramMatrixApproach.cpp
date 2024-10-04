@@ -139,7 +139,8 @@ long NGramMatrixApproach::count_polys() {
 }
 
 // the recursive part of the tracing algorithm
-long NGramMatrixApproach::trace_path (int point, const int& target, std::vector<int> history, int depth) {
+long NGramMatrixApproach::trace_path (int point, const int& target, std::vector<int> history,
+				      int depth) {
   long num_polygons = 0;
   depth++;
   
