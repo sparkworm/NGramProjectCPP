@@ -121,19 +121,9 @@ long NGramMatrixApproach::count_polys() {
     const int const_p = p;
     num_polygons+=trace_path(p, const_p, {});
     /* remove p from adj_mat */
-    std::cout << "erasing element from matrix of " << adj_mat.size() << " vectors" << std::endl;
     adj_mat.erase(adj_mat.begin());
     for (auto& vec : adj_mat) {
-      std::cout << "vector size: " << vec.size();
       vec.erase(vec.begin());
-      std::cout << ", size after: " << vec.size() << std::endl;
-    }
-    std::cout << "new matrix: " << std::endl;
-    for (auto vec : adj_mat) {
-      for (auto scalar : vec) {
-	std::cout << scalar << " ";
-      }
-      std::cout << std::endl;
     }
   }
 
@@ -144,14 +134,12 @@ long NGramMatrixApproach::count_polys() {
 
 // the recursive part of the tracing algorithm
 long NGramMatrixApproach::trace_path (int point, const int& target, std::vector<int> history) {
-  std::cout << "new recursion!\n\ttarget: " << target << "\n\tpoint: " << point << std::endl;
   long num_polygons = 0;
 
   history.push_back(point);
   
   // iterates through the adjacency vector of the given point
   for (size_t i=0; i<adj_mat.at(point).size(); i++) {
-    std::cout << "i: " << i << std::endl;
     /* checks that the point is adjacent according to the adj_mat and that it has not been
        visited before */
     if (adj_mat.at(point).at(i)) {
