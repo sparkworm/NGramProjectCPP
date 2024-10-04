@@ -43,12 +43,9 @@ void NGramMatrixApproach::generate(int num_points, double radius) {
     }
   }
 
-  std::cout << "number of segments: " << lines.size() << std::endl;
-  
+  /* Fracturing procedure */
   // create a list of all the points of intersection
   std::vector<point> poi = get_intersection_points(lines);
-
-  std::cout << "poi: " << poi.size() << std::endl;
   
   // iterate through every intersection
   for (auto it_p=poi.begin(); it_p!=poi.end(); ++it_p) {
@@ -59,20 +56,31 @@ void NGramMatrixApproach::generate(int num_points, double radius) {
 	int fr = is_point_on_segment(*it_p, lines.at(idx_l));
 	std::vector<line> temp = split_line(lines.at(idx_l), *it_p);
 	lines.erase(lines.begin() + idx_l);
-	lines.insert(lines.end(), temp.begin(), temp.end());
+	lines .insert(lines.end(), temp.begin(), temp.end());
 	idx_l--;
       }
     }
   }
+  
+  std::cout << "number of segments: " << lines.size() << std::endl;
+  
+  // create a list of all the points of intersection
+  std::vector<point> points;
+  for (auto l : lines) {
+    if (std::find(points.begin(), points.end(), l.a)==points.end()) points.push_back(l.a);
+    if (std::find(points.begin(), points.end(), l.b)==points.end()) points.push_back(l.b);
+  }
+
+  std::cout << "number of points: " << points.size() << std::endl;
 
   //std::vector<std::vector<int>> adj_mat;
 
   // create adj_mat.  the index of each point of intersection should be the number of that point
-  for (size_t i=0; i<poi.size(); i++) {
+  for (size_t i=0; i<points.size(); i++) {
     std::vector<int> adj_vec;
-    for (size_t j=0; j<poi.size(); j++) {
+    for (size_t j=0; j<points.size(); j++) {
       // hypothetical line
-      line hpth_l(poi.at(i), poi.at(j));
+      line hpth_l(points.at(i), points.at(j));
       adj_vec.push_back(std::find(lines.begin(), lines.end(), hpth_l)==lines.end() ? 0 : 1);
     }
     adj_mat.push_back(adj_vec);
@@ -104,23 +112,46 @@ std::vector<point> NGramMatrixApproach::get_intersection_points(std::vector<line
  */
 long NGramMatrixApproach::count_polys() {
   long num_polygons = 0;
+
+  std::vector<std::vector<int>> adj_mat_backup = adj_mat;
+
+  int p = 0;
   
-  for (int p=0; p<adj_mat.size(); p++) {
+  while (adj_mat.size() > 0) {
     const int const_p = p;
     num_polygons+=trace_path(p, const_p, {});
+    /* remove p from adj_mat */
+    std::cout << "erasing element from matrix of " << adj_mat.size() << " vectors" << std::endl;
+    adj_mat.erase(adj_mat.begin());
+    for (auto& vec : adj_mat) {
+      std::cout << "vector size: " << vec.size();
+      vec.erase(vec.begin());
+      std::cout << ", size after: " << vec.size() << std::endl;
+    }
+    std::cout << "new matrix: " << std::endl;
+    for (auto vec : adj_mat) {
+      for (auto scalar : vec) {
+	std::cout << scalar << " ";
+      }
+      std::cout << std::endl;
+    }
   }
+
+  adj_mat = adj_mat_backup;
   
   return num_polygons / 2;
 }
 
 // the recursive part of the tracing algorithm
 long NGramMatrixApproach::trace_path (int point, const int& target, std::vector<int> history) {
+  std::cout << "new recursion!\n\ttarget: " << target << "\n\tpoint: " << point << std::endl;
   long num_polygons = 0;
 
   history.push_back(point);
   
   // iterates through the adjacency vector of the given point
   for (size_t i=0; i<adj_mat.at(point).size(); i++) {
+    std::cout << "i: " << i << std::endl;
     /* checks that the point is adjacent according to the adj_mat and that it has not been
        visited before */
     if (adj_mat.at(point).at(i)) {
