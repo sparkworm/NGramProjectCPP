@@ -67,11 +67,14 @@ void NGramMatrixApproach::generate(int num_points, double radius) {
   std::cout << "number of segments: " << lines.size() << std::endl;
   
   // create a list of all the points of intersection
-  std::vector<point> points;
+  std::vector<point> points(vertices);
+  points.insert(points.end(), poi.begin(), poi.end());
+  /*
   for (auto l : lines) {
     if (std::find(points.begin(), points.end(), l.a)==points.end()) points.push_back(l.a);
     if (std::find(points.begin(), points.end(), l.b)==points.end()) points.push_back(l.b);
   }
+  */
 
   std::cout << "number of points: " << points.size() << std::endl;
 
